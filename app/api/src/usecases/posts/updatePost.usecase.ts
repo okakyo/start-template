@@ -1,5 +1,5 @@
 import { Injectable, UsePipes } from "@nestjs/common";
-import { ZodValidationPipe } from "src/config/zod.config";
+import { ZodValidationPipe } from "src/libs/config/zod.config";
 import { UpdatePostDto, UpdatePostDtoSchema } from "src/domains/dtos/post/updatePost.dto";
 import { PostRepository } from "src/domains/interfaces";
 

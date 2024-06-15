@@ -1,8 +1,9 @@
-import { PrismaService } from "src/config/prisma.service";
+import { PrismaService } from "src/libs/config/prisma.service";
 import { PostRepository } from "../../domains/interfaces/post.repository";
 import { PostEntity, PostId, newPostEntity } from "../../domains/entities/post.entity";
 import { Injectable } from "@nestjs/common";
 import { CreatePostDto, UpdatePostDto } from "src/domains/dtos/post";
+import { UserId } from "src/domains/entities/user.entity";
 
 @Injectable()
 export class PostRepositoryImpl implements PostRepository {
@@ -19,7 +20,7 @@ export class PostRepositoryImpl implements PostRepository {
       return newPostEntity(post);
     })
   }
-  async findPostById(id: string): Promise<PostEntity|null> {
+  async findPostById(id: PostId): Promise<PostEntity|null> {
     const post = await this.prismaService.post.findUnique({
       where: {
         id: id
@@ -31,7 +32,7 @@ export class PostRepositoryImpl implements PostRepository {
     return newPostEntity(post);
   }
 
-  async findPostsByAuthorId(authorId: string): Promise<PostEntity[]> {
+  async findPostsByAuthorId(authorId: UserId): Promise<PostEntity[]> {
     const posts = await this.prismaService.post.findMany({
       where: {
         authorId: authorId

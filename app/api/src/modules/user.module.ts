@@ -1,5 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { PrismaService } from '../config/prisma.service';
+import { PrismaService } from '../libs/config/prisma.service';
 
 import { getUserUseCase, registerUserUseCase, updateProfileUseCase, withdrawUseCase } from '../usecases/users';
 import { findPostsByAuthorIdUseCase } from '../usecases/posts';

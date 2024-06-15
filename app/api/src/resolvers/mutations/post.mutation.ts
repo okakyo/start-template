@@ -1,6 +1,6 @@
 import { BadRequestException, NotFoundException, UsePipes } from "@nestjs/common";
 import { Mutation, Resolver,Args} from "@nestjs/graphql";
-import { ZodValidationPipe } from "src/config/zod.config";
+import { ZodValidationPipe } from "src/libs/config/zod.config";
 import { CreatePostInput,UpdatePostInput } from "src/domains/dtos/post";
 import { CreatePostDtoSchema, newCreatePostDto } from "src/domains/dtos/post/createPost.dto";
 import { UpdatePostDtoSchema, newUpdatePostDto } from "src/domains/dtos/post/updatePost.dto";

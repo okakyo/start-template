@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UsePipes } from "@nestjs/common";
 import { PostRepository } from "../../domains/interfaces/post.repository";
 import { CreatePostDto } from "src/domains/dtos/post";
-import { ZodValidationPipe } from "src/config/zod.config";
+import { ZodValidationPipe } from "src/libs/config/zod.config";
 import { CreatePostDtoSchema } from "src/domains/dtos/post/createPost.dto";
 import { UserRepository } from "src/domains/interfaces";
 import { newUserId } from "src/domains/entities/user.entity";
