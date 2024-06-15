@@ -1,29 +1,30 @@
 import { Parent, ResolveField, Resolver,Query,Args } from "@nestjs/graphql";
+import { newUserId } from "src/domains/entities/user.entity";
 import { PostObject } from "src/infra/objects/post.object";
-import { UserObject } from "src/infra/objects/user.object";
-import { getPostsByAuthorIdUseCase } from "src/usecases/posts";
+import { UserObject,UserDetailObject, } from "src/infra/objects/user.object";
+import { findPostsByAuthorIdUseCase } from "src/usecases/posts";
 import { getUserUseCase } from "src/usecases/users";
+import { getUserProfileUseCase } from "src/usecases/users/getUserProfile.usecase";
 
-@Resolver((of) => UserObject)
+@Resolver((of) => UserDetailObject)
 export class UserQuery {
   // Add your user queries here
   constructor(
-    private readonly getPostsByAuthorIdUseCase: getPostsByAuthorIdUseCase,
-    private readonly getUsersUseCase: getUserUseCase,
-  ) {}
+    private readonly findPostsByAuthorIdUseCase: findPostsByAuthorIdUseCase,
+    private readonly getUserProfileUseCase: getUserProfileUseCase
+  ) { }
 
-  @Query(returns => UserObject, { name: 'user', nullable: true })
-    // TODO: 引数を dtos で定義する
-
+  @Query(returns => UserDetailObject, { name: 'user', nullable: true })
   async user(@Args('id') id: string){
-    const user =  await this.getUsersUseCase.exec(id);
+    const userId = newUserId(id);
+    const user =  await this.getUserProfileUseCase.exec(userId);
     return user;
   }
 
-  @ResolveField(type=>[PostObject], {name: 'posts'})
-  async posts(@Parent() user: UserObject) {
-    const { id } = user;
-    const posts = await this.getPostsByAuthorIdUseCase.exec(id);
+  @ResolveField(type=>[PostObject], {name: 'posts',nullable: true})
+  async posts(@Parent() profile:  UserDetailObject) {
+    const { id } = profile;
+    const posts = await this.findPostsByAuthorIdUseCase.exec(id);
     return posts;
   }
 }

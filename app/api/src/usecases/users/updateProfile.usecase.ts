@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from '../../domains/interfaces/user.repository';
 import { UpdateUserDto } from '../../domains/dtos/user';
 
@@ -7,7 +7,16 @@ export class updateProfileUseCase {
   constructor(
     private readonly useRepository: UserRepository
   ) {}
-  async exec(id: string,user:UpdateUserDto) {
-    return await this.useRepository.updateProfile(id,user);
+  async exec(userInput:UpdateUserDto) {
+    try {
+      const user = await this.useRepository.getUserById(userInput.id);
+      if (!user) {
+        throw new NotFoundException(`User:${userInput.id} not found`);
+      }
+
+      return await this.useRepository.updateProfile(userInput);
+    } catch (e) {
+      throw e;
+    }
   }
 }

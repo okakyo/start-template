@@ -1,7 +1,6 @@
-export { getPostsUseCase } from './getPosts.usecase'
-
-export { getPostByIdUseCase } from './getPostById.usecase'
-export { getPostsByAuthorIdUseCase } from './getPostsByAuthorId.usecase'
+export { findPostsUseCase } from './findPosts.usecase'
+export { findPostByIdUseCase } from './findPostById.usecase'
+export { findPostsByAuthorIdUseCase } from './findPostsByAuthorId.usecase'
 export { CreatePostUseCase } from './createPost.usecase'
 export { UpdatePostUseCase } from './updatePost.usecase'
 export { RemovePostUseCase } from './removePost.usecase'

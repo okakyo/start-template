@@ -1,7 +1,7 @@
 import DataLoader from 'dataloader';
 
 export abstract class BaseDataloader<K, V> extends Object {
-   protected readonly dataloader: DataLoader<K, V> = new DataLoader<K, V>(this.batchLoad.bind(this));
+  protected readonly dataloader: DataLoader<K, V> = new DataLoader<K, V>(this.batchLoad.bind(this));
 
   public clear(key: K): DataLoader<K, V> {
     return this.dataloader.clear(key);

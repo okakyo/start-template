@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserResolver } from '../../resolvers/mutations/user.mutation';
+import { UserQuery } from 'src/resolvers/queries/user.query';
 
 describe('UserResolver', () => {
-  let resolver: UserResolver;
+  let query: UserQuery ;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserResolver],
+      providers: [UserQuery],
     }).compile();
 
-    resolver = module.get<UserResolver>(UserResolver);
+    query = module.get<UserQuery>(UserQuery);
   });
 
   it('should be defined', () => {
-    expect(resolver).toBeDefined();
+    expect(query).toBeDefined();
   });
 });

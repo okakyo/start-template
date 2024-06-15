@@ -8,6 +8,7 @@ export class registerUserUseCase {
     private readonly useRepository: UserRepository
   ) {}
   async exec(user: CreateUserDto) {
+    // TODO: Try Catch を利用してエラーハンドリングを行う
     return await this.useRepository.register(user);
   }
 }

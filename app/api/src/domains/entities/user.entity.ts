@@ -1,29 +1,23 @@
-export interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  posts?: any[];
-}
+import * as v from "valibot";
+import { PostEntity, postEntitySchema } from "./post.entity";
 
+export const userIdSchema = v.pipe(v.string(), v.brand("userId"));
+export type UserId = v.InferOutput<typeof userIdSchema>;
+export const newUserId = (input: v.InferInput<typeof userIdSchema>) => v.parse(userIdSchema,input);
 
-export class UserEntity {
-  id: string;
-  name: string;
-  email: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  posts?: any[];
+export const userEntitySchema = v.object({
+  id:  userIdSchema,
+  name: v.string(),
+});
+export type UserEntity = v.InferOutput<typeof userEntitySchema>
+export const newUserEntity = (input: v.InferInput<typeof userEntitySchema>) => v.parse(userEntitySchema, input);
 
-  constructor(user: IUser) {
-    this.id = user.id,
-    this.name = user.name;
-    this.email = user.email;
-    this.createdAt = user.createdAt;
-    this.updatedAt = user.updatedAt;
-    if(user.posts) {
-      this.posts = user.posts;
-    }
-  }
-}
+export const userDetailEntitySchema = v.object({
+  ...userEntitySchema.entries,
+  email: v.pipe(v.string(),v.email()),
+  createdAt: v.date(),
+  updatedAt: v.date(),
+});
+
+export type UserDetailEntity = v.InferOutput<typeof userDetailEntitySchema>;
+export const newUserDetailEntity = (input:v.InferInput<typeof userDetailEntitySchema>) => v.parse(userDetailEntitySchema,input)

@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PostRepository } from '../../domains/interfaces/post.repository';
+import { PostId } from 'src/domains/entities/post.entity';
 
 @Injectable()
-export class getPostByIdUseCase {
+export class findPostByIdUseCase {
   constructor(
     private readonly postRepository: PostRepository
   ){}
-  async exec(id: string) {
-    const post = await this.postRepository.getPostById(id);
+  async exec(id: PostId) {
+    const post = await this.postRepository.findPostById(id);
     if (!post) {
       return null;
     }

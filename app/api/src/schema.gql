@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 input CreatePostInput {
+  authorId: String!
   content: String!
   isPublished: Boolean = false
   title: String!
@@ -28,7 +29,8 @@ type Mutation {
 }
 
 type PostObject {
-  author: UserObject
+  author: UserObject!
+  authorId: String!
   content: String!
   createdAt: DateTime!
   deletedAt: DateTime
@@ -40,7 +42,7 @@ type PostObject {
 type Query {
   post(id: String!): PostObject
   posts: [PostObject!]!
-  user(id: String!): UserObject
+  user(id: String!): UserDetailObject
 }
 
 input UpdatePostInput {
@@ -54,11 +56,16 @@ input UpdateUserInput {
   name: String
 }
 
-type UserObject {
+type UserDetailObject {
   createdAt: DateTime!
   email: String!
   id: String!
   name: String!
-  posts: [PostObject!]!
+  posts: [PostObject!]
   updatedAt: DateTime!
+}
+
+type UserObject {
+  id: String!
+  name: String!
 }

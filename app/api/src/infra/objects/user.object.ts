@@ -9,6 +9,11 @@ export class UserObject {
   @Field((type) => String)
   name: string;
 
+}
+
+@ObjectType()
+export class UserDetailObject extends UserObject {
+
   @Field((type) => String)
   email: string;
 
@@ -18,3 +23,4 @@ export class UserObject {
   @Field((type) => Date)
   updatedAt: Date;
 }
+

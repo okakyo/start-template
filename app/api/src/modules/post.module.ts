@@ -1,6 +1,6 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { PrismaService } from 'src/config/prisma/prisma.service';
-import {getPostByIdUseCase,getPostsUseCase,CreatePostUseCase,UpdatePostUseCase,RemovePostUseCase, } from 'src/usecases/posts';
+import { PrismaService } from 'src/config/prisma.service';
+import {findPostByIdUseCase,findPostsUseCase,CreatePostUseCase,UpdatePostUseCase,RemovePostUseCase, } from 'src/usecases/posts';
 import { PostRepository,UserRepository } from 'src/domains/interfaces';
 import { PostRepositoryImpl,UserRepositoryImpl } from 'src/infra/repositoryImpl';
 import { PostQuery } from 'src/resolvers/queries/post.query';
@@ -13,8 +13,8 @@ import { getUserUseCase } from 'src/usecases/users';
   imports: [forwardRef(() => UserModule)],
   providers: [
     PrismaService,
-    getPostsUseCase,
-    getPostByIdUseCase,
+    findPostsUseCase,
+    findPostByIdUseCase,
     CreatePostUseCase,
     UpdatePostUseCase,
     RemovePostUseCase,

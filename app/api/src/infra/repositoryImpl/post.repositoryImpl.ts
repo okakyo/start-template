@@ -1,6 +1,6 @@
-import { PrismaService } from "src/config/prisma/prisma.service";
+import { PrismaService } from "src/config/prisma.service";
 import { PostRepository } from "../../domains/interfaces/post.repository";
-import { PostEntity } from "../../domains/entities/post.entity";
+import { PostEntity, PostId, newPostEntity } from "../../domains/entities/post.entity";
 import { Injectable } from "@nestjs/common";
 import { CreatePostDto, UpdatePostDto } from "src/domains/dtos/post";
 
@@ -9,73 +9,40 @@ export class PostRepositoryImpl implements PostRepository {
   constructor(
     private readonly prismaService: PrismaService
   ){}
-  async getPosts() {
+  async findPosts() {
     const posts = await this.prismaService.post.findMany({
       orderBy: {
         createdAt: 'desc'
       },
-      include: {
-        author: true
-      }
     });
     return posts.map((post) => {
-      return new PostEntity(
-        post.id,
-        post.title,
-        post.content,
-        post.isPublished,
-        post.createdAt,
-        post.updatedAt,
-        post.author
-      );
+      return newPostEntity(post);
     })
   }
-  async getPostById(id: string): Promise<PostEntity|null> {
+  async findPostById(id: string): Promise<PostEntity|null> {
     const post = await this.prismaService.post.findUnique({
       where: {
         id: id
       },
-      include: {
-        author: true
-      }
     });
     if (!post) {
-      // TODO: 404 エラーを出す
       return null;
     }
-    return new PostEntity(
-      post.id,
-      post.title,
-      post.content,
-      post.isPublished,
-      post.createdAt,
-      post.updatedAt,
-      post.author
-    );
+    return newPostEntity(post);
   }
 
-  async getPostsByAuthorId(authorId: string): Promise<PostEntity[]> {
+  async findPostsByAuthorId(authorId: string): Promise<PostEntity[]> {
     const posts = await this.prismaService.post.findMany({
       where: {
         authorId: authorId
       },
     });
     return posts.map((post) => {
-      return new PostEntity(
-        post.id,
-        post.title,
-        post.content,
-        post.isPublished,
-        post.createdAt,
-        post.updatedAt,
-      );
+      return newPostEntity(post);
     });
   }
 
   async createPost(Post: CreatePostDto): Promise<PostEntity|null> {
-    // TODO: Define the Input type of the Post parameter
-    // TODO: 認証機能を導入する
-
     const post = await this.prismaService.post.create({
       data: {
         title: Post.title,
@@ -95,41 +62,24 @@ export class PostRepositoryImpl implements PostRepository {
     if (!post) {
       return null;
     }
-    return new PostEntity(
-      post.id,
-      post.title,
-      post.content,
-      post.isPublished,
-      post.createdAt,
-      post.updatedAt,
-    )
+    return newPostEntity(post);
   }
   // TODO: Define the Input type of the Post parameter
-  async updatePost(id: string, Post: UpdatePostDto): Promise<PostEntity|null> {
-    const post = await this.prismaService.post.update({
+  async updatePost(input: UpdatePostDto): Promise<PostEntity|null> {
+    const { id, ...data } = input;
+    const updatedPost = await this.prismaService.post.update({
       where: {
         id: id
       },
-      data: {
-        title: Post.title,
-        content: Post.content,
-        isPublished: Post.isPublished
-      }
+      data
     });
-    if (!post) {
+    if (!updatedPost) {
       return null;
     }
-    return new PostEntity(
-      post.id,
-      post.title,
-      post.content,
-      post.isPublished,
-      post.createdAt,
-      post.updatedAt,
-    )
+    return newPostEntity(updatedPost);
   }
 
-  async deletePost(id: string): Promise<boolean> {
+  async deletePost(id: PostId): Promise<boolean> {
     const post = await this.prismaService.post.delete({
       where: {
         id: id

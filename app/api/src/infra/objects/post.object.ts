@@ -12,8 +12,8 @@ export class PostObject {
   @Field((type) => String)
   content: string;
 
-  @Field((type) => UserObject, { nullable: true })
-  author?: UserObject;
+  @Field((type) => String)
+  authorId: string;
 
   @Field((type) => Date)
   createdAt: Date;
