@@ -1,11 +1,13 @@
 import {
   Injectable,
  } from "@nestjs/common";
-import * as firebase from "firebase-admin";
-import { ServiceAccount } from "firebase-admin";
-
+import firebase from "firebase-admin";
+import { App, initializeApp } from "firebase-admin/app"
+import {getAuth} from "firebase-admin/auth"
 @Injectable()
 export class FirebaseService {
-  private firebaseApp: firebase.app.App;
-  
+  constructor() {}
+  getAuth() {
+    return firebase.auth();
+  }
 }

@@ -24,8 +24,8 @@ type Mutation {
   registerUser(user: CreateUserInput!): UserObject
   removePost(id: String!): Boolean!
   removeUser(id: String!): Boolean
-  updatePost(id: String!, post: UpdatePostInput!): PostObject!
-  updateProfile(id: String!, user: UpdateUserInput): UserObject
+  updatePost(post: UpdatePostInput!): PostObject!
+  updateProfile(user: UpdateUserInput!): UserObject
 }
 
 type PostObject {
@@ -47,12 +47,14 @@ type Query {
 
 input UpdatePostInput {
   content: String!
+  id: String!
   isPublished: Boolean = false
   title: String!
 }
 
 input UpdateUserInput {
   email: String
+  id: String!
   name: String
 }
 

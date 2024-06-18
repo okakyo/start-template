@@ -4,8 +4,9 @@ import {  registerUserUseCase, updateProfileUseCase, withdrawUseCase } from '../
 import { CreateUserDto, CreateUserInput, UpdateUserDto,UpdateUserInput } from '../../domains/dtos/user';
 import { newUserEntity, newUserId } from 'src/domains/entities/user.entity';
 import { newCreateUserDto } from 'src/domains/dtos/user/createUser.dto';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, UseGuards } from '@nestjs/common';
 import { UpdateUserDtoSchema, newUpdateUserDto } from 'src/domains/dtos/user/updateUser.dto';
+import { JwtAuthGuard } from 'src/libs/auth/jwt.guard';
 
 
 @Resolver((of) => UserObject)
@@ -31,6 +32,7 @@ export class UserMutation {
 
   // TODO: 認証が必要（本人、あるいは管理者権限
   @Mutation(returns => UserObject, { name: 'updateProfile', nullable: true })
+  @UseGuards(JwtAuthGuard)
   async updateProfile(@Args('user') user: UpdateUserInput) {
     const parsedUser = newUpdateUserDto(user);
     if (!parsedUser.success) {
@@ -41,6 +43,7 @@ export class UserMutation {
 
   // TODO: 認証が必要（本人、あるいは管理者権限
   @Mutation(returns => Boolean, { name: 'removeUser', nullable: true })
+  @UseGuards(JwtAuthGuard)
   async withdraw(
     @Args('id') id: string
   ) {

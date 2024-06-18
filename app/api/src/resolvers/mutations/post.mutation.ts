@@ -1,4 +1,4 @@
-import { BadRequestException, NotFoundException, UsePipes } from "@nestjs/common";
+import { BadRequestException, NotFoundException, UseGuards, UsePipes } from "@nestjs/common";
 import { Mutation, Resolver,Args} from "@nestjs/graphql";
 import { ZodValidationPipe } from "src/libs/config/zod.config";
 import { CreatePostInput,UpdatePostInput } from "src/domains/dtos/post";
@@ -8,6 +8,7 @@ import { PostId, newPostId } from "src/domains/entities/post.entity";
 import { PostObject } from "src/infra/objects/post.object";
 import { CreatePostUseCase, RemovePostUseCase, UpdatePostUseCase, findPostByIdUseCase } from "src/usecases/posts";
 import * as v from 'valibot';
+import { JwtAuthGuard } from "src/libs/auth/jwt.guard";
 
 @Resolver(of => PostObject)
 export class PostMutation {
@@ -20,6 +21,7 @@ export class PostMutation {
   ) { }
 
   @Mutation(returns => PostObject)
+  @UseGuards(JwtAuthGuard)
   async createPost(@Args('post') post: CreatePostInput) {
     // TODO: Valitation を追加
     const input = newCreatePostDto(post);
@@ -30,6 +32,7 @@ export class PostMutation {
   }
 
   @Mutation(returns => PostObject)
+  @UseGuards(JwtAuthGuard)
   async updatePost(@Args('post') post: UpdatePostInput) {
     const inputPost = newUpdatePostDto(post);
     if (!inputPost.success) {
@@ -44,6 +47,7 @@ export class PostMutation {
   }
 
   @Mutation(returns => Boolean)
+  @UseGuards(JwtAuthGuard)
   async removePost(@Args('id') id: string) {
     const postId = newPostId(id);
     const targetPost = await this.findPostByIdUseCase.exec(postId);

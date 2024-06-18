@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PostRepository } from '../../domains/interfaces/post.repository';
-import { PostEntity, PostId } from '../../domains/entities/post.entity';
 import { UserId } from 'src/domains/entities/user.entity';
 
 @Injectable()
