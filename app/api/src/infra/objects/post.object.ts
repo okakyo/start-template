@@ -1,5 +1,6 @@
 import { Field,  ObjectType } from "@nestjs/graphql";
 import { UserObject } from "./user.object";
+import { OffsetPaginatedObject } from "./util";
 
 @ObjectType()
 export class PostObject {
@@ -24,3 +25,6 @@ export class PostObject {
   @Field((type) => Date, { nullable: true })
   deletedAt?: Date;
 }
+
+@ObjectType()
+export class PaginatedPostObject extends OffsetPaginatedObject(PostObject) {}

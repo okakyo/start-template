@@ -1,15 +1,55 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../../libs/config/prisma.service";
 import { UserRepository } from "../../domains/interfaces/user.repository";
-import {  UserDetailEntity, UserEntity, UserId, newUserDetailEntity, newUserEntity  } from "../../domains/entities/user.entity";
+import {  AdminUserDetails, UserDetailEntity, UserEntity, UserId, newAdminUserDetails, newUserDetailEntity, newUserEntity  } from "../../domains/entities/user.entity";
 import { newPostEntity } from "src/domains/entities/post.entity";
 import { CreateUserDto, UpdateUserDto } from "src/domains/dtos/user";
+import { newPagination } from "src/domains/entities/utils";
+import { PaginationArgs } from "src/domains/dtos/utils/pagination.dto";
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
   constructor(
     private  prismaService: PrismaService
   ) { }
+
+  // TODO: アカウント権限で取得できるようにすること、チームごとのユーザーで取得できるようにすること
+  async adminGetAllUsers(pagination: PaginationArgs): Promise<AdminUserDetails> {
+    const { page, perPage } = pagination;
+
+    const take = perPage ? perPage : 10;
+    const skip = page ? (page - 1) * take : 0;
+    const [users, totalCount] = await Promise.all([
+      this.prismaService.user.findMany({
+        take,
+        skip,
+        orderBy: {
+          createdAt: 'desc'
+        }
+      }),
+      this.prismaService.user.count()
+    ]);
+    const parsedUsers = users.map(user => newUserDetailEntity({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    }));
+
+    const totalPages = Math.ceil(totalCount / perPage);
+    const hasNextPage = page < totalPages;
+
+    const parsedPagination = newPagination({
+      totalPages,
+      hasNextPage,
+    })
+
+    return newAdminUserDetails({
+      ...parsedPagination,
+      items: parsedUsers,
+    })
+  }
 
   async getUserProfile(id: UserId): Promise<UserDetailEntity | null>{
     const user = await this.prismaService.user.findUnique({

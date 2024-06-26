@@ -28,6 +28,17 @@ type Mutation {
   updateProfile(user: UpdateUserInput!): UserObject
 }
 
+type PaginatedUserDetailObject {
+  hasNextPage: Boolean!
+  items: [UserDetailObject!]
+  totalPages: Int!
+}
+
+input PaginationArgs {
+  page: Int
+  perPage: Int
+}
+
 type PostObject {
   author: UserObject!
   authorId: String!
@@ -43,6 +54,7 @@ type Query {
   post(id: String!): PostObject
   posts: [PostObject!]!
   user(id: String!): UserDetailObject
+  users(pagination: PaginationArgs!): PaginatedUserDetailObject!
 }
 
 input UpdatePostInput {

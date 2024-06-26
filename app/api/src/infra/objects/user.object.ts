@@ -1,4 +1,5 @@
 import { Field, ObjectType } from "@nestjs/graphql";
+import { OffsetPaginatedObject } from "./util";
 
 
 @ObjectType()
@@ -8,6 +9,7 @@ export class UserObject {
 
   @Field((type) => String)
   name: string;
+
 
 }
 
@@ -24,3 +26,5 @@ export class UserDetailObject extends UserObject {
   updatedAt: Date;
 }
 
+@ObjectType()
+export class PaginatedUserDetailObject extends OffsetPaginatedObject(UserDetailObject) {}

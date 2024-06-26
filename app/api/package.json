@@ -21,8 +21,7 @@
     "db:prisma": "prisma init",
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
-    "gen:prisma": "prisma generate",
-    "gen:gql": "graphql-codegen --config codegen.yml"
+    "gen:prisma": "prisma generate"
   },
   "dependencies": {
     "@apollo/server": "^4.10.4",
@@ -47,6 +46,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@graphql-codegen/introspection": "4.0.3",
     "@nestjs/cli": "^10.3.2",
     "@nestjs/schematics": "^10.1.1",
     "@nestjs/testing": "^10.3.9",
