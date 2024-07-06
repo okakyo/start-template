@@ -1,17 +1,16 @@
 "use client";
 
 import { Suspense } from "react";
-import {ThemedLayoutV2} from "@refinedev/chakra-ui"
 
+import { NavigateToResource } from "@refinedev/nextjs-router";
+import { Authenticated } from "@refinedev/core";
 
 export default function IndexPage() {
   return (
-    <ThemedLayoutV2>
-      <Suspense>
-        <div className="content">
-          <h1>Welcome to the admin panel</h1>
-        </div>
-      </Suspense>
-    </ThemedLayoutV2>
+    <Suspense>
+      <Authenticated key="home-page">
+        <NavigateToResource />
+      </Authenticated>
+    </Suspense>
   );
 }

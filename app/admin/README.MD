@@ -39,7 +39,7 @@ Refine's hooks and components simplifies the development process and eliminates 
 
 To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
 
-- **GraphQL Data Provider** [Docs](https://refine.dev/docs/core/providers/data-provider/#overview)
+- **REST Data Provider** [Docs](https://refine.dev/docs/core/providers/data-provider/#overview)
 - **Custom Auth Provider** [Docs](https://refine.dev/docs/core/providers/auth-provider/)
 
 ## License

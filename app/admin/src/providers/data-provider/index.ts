@@ -1,9 +1,7 @@
 "use client";
 
-import graphqlDataProvider, { GraphQLClient } from "@refinedev/graphql";
+import dataProviderSimpleRest from "@refinedev/simple-rest";
 
-const API_URL = "https://localhost:5050/graphql";
+const API_URL = "https://api.fake-rest.refine.dev";
 
-export const client = new GraphQLClient(API_URL);
-
-export const dataProvider = graphqlDataProvider(client);
+export const dataProvider = dataProviderSimpleRest(API_URL);

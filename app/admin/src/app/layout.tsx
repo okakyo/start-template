@@ -1,14 +1,14 @@
 import { DevtoolsProvider } from "@providers/devtools";
-import { ThemedLayoutV2, } from "@refinedev/chakra-ui";
-import { Refine } from "@refinedev/core";
+import { GitHubBanner, Refine } from "@refinedev/core";
+import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerProvider from "@refinedev/nextjs-router";
 import { Metadata } from "next";
 import React, { Suspense } from "react";
 
 import { authProvider } from "@providers/auth-provider";
 import { dataProvider } from "@providers/data-provider";
-import { ChakraUIProvider } from "@providers/chakra-provider";
 import "@styles/global.css";
+import { ChakraProvider } from "@chakra-ui/react";
 
 export const metadata: Metadata = {
   title: "Refine",
@@ -18,49 +18,59 @@ export const metadata: Metadata = {
   },
 };
 
-
-
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    (<html lang="en">
+    <html lang="en">
       <body>
         <Suspense>
-          <ChakraUIProvider>
-            <DevtoolsProvider>
-              <Refine
-                routerProvider={routerProvider}
-                dataProvider={dataProvider}
-                authProvider={authProvider}
-                options={{
-                  syncWithLocation: true,
-                  warnWhenUnsavedChanges: true,
-                  useNewQueryKeys: true,
-                  projectId: "v5kikf-eb9PUq-Mh5P4X",
-                }}
-                resources={[{
-                  name: "users",
-                  list: "/users",
-                  create: "/users/create",
-                  edit: "/users/edit/:id",
-                  show: "/users/show/:id"
-                }, {
-                  name: "posts",
-                  list: "/posts",
-                  create: "/posts/create",
-                  edit: "/posts/edit/:id",
-                  show: "/posts/show/:id"
-                }]}>
+          <ChakraProvider>
+            <RefineKbarProvider>
+              <DevtoolsProvider>
+                <Refine
+                  routerProvider={routerProvider}
+                  dataProvider={dataProvider}
+                  authProvider={authProvider}
+                  resources={[
+                    {
+                      name: "blog_posts",
+                      list: "/blog-posts",
+                      create: "/blog-posts/create",
+                      edit: "/blog-posts/edit/:id",
+                      show: "/blog-posts/show/:id",
+                      meta: {
+                        canDelete: true,
+                      },
+                    },
+                    {
+                      name: "categories",
+                      list: "/categories",
+                      create: "/categories/create",
+                      edit: "/categories/edit/:id",
+                      show: "/categories/show/:id",
+                      meta: {
+                        canDelete: true,
+                      },
+                    },
+                  ]}
+                  options={{
+                    syncWithLocation: true,
+                    warnWhenUnsavedChanges: true,
+                    useNewQueryKeys: true,
+                    projectId: "jClVKB-qCclcW-JsUeBY",
+                  }}
+                >
                   {children}
-              </Refine>
-            </DevtoolsProvider>
-          </ChakraUIProvider>
+                  <RefineKbar />
+                </Refine>
+              </DevtoolsProvider>
+            </RefineKbarProvider>
+          </ChakraProvider>
         </Suspense>
       </body>
-    </html>)
+    </html>
   );
 }
