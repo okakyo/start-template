@@ -1,60 +1,66 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../../libs/config/prisma.service";
-import { UserRepository } from "../../domains/interfaces/user.repository";
-import {  AdminUserDetails, UserDetailEntity, UserEntity, UserId, newAdminUserDetails, newUserDetailEntity, newUserEntity  } from "../../domains/entities/user.entity";
-import { newPostEntity } from "src/domains/entities/post.entity";
-import { CreateUserDto, UpdateUserDto } from "src/domains/dtos/user";
-import { newPagination } from "src/domains/entities/utils";
-import { PaginationArgs } from "src/domains/dtos/utils/pagination.dto";
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../libs/config/prisma.service';
+import { UserRepository } from '../../domains/interfaces/user.repository';
+import {
+  AdminUserDetails,
+  UserDetailEntity,
+  UserEntity,
+  UserId,
+  newAdminUserDetails,
+  newUserDetailEntity,
+  newUserEntity,
+} from '../../domains/entities/user.entity';
+import { newPostEntity } from 'src/domains/entities/post.entity';
+import { CreateUserDto, UpdateUserDto } from 'src/domains/dtos/user';
+import { newPagination } from 'src/domains/entities/utils';
+import { OffsetPaginationArgs } from 'src/domains/dtos/utils/pagination.dto';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
-  constructor(
-    private  prismaService: PrismaService
-  ) { }
+  constructor(private prismaService: PrismaService) {}
 
   // TODO: アカウント権限で取得できるようにすること、チームごとのユーザーで取得できるようにすること
-  async adminGetAllUsers(pagination: PaginationArgs): Promise<AdminUserDetails> {
-    const { page, perPage } = pagination;
+  async adminGetAllUsers(
+    pagination: OffsetPaginationArgs,
+  ): Promise<AdminUserDetails> {
+    const { skip, take } = pagination;
 
-    const take = perPage ? perPage : 10;
-    const skip = page ? (page - 1) * take : 0;
     const [users, totalCount] = await Promise.all([
       this.prismaService.user.findMany({
-        take,
         skip,
+        take,
         orderBy: {
-          createdAt: 'desc'
-        }
+          createdAt: 'desc',
+        },
       }),
-      this.prismaService.user.count()
+      this.prismaService.user.count(),
     ]);
-    const parsedUsers = users.map(user => newUserDetailEntity({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt
-    }));
 
-    const totalPages = Math.ceil(totalCount / perPage);
-    const hasNextPage = page < totalPages;
+    const parsedUsers = users.map((user) =>
+      newUserDetailEntity({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        thumbnailUrl: user.thumbnailUrl,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }),
+    );
 
     const parsedPagination = newPagination({
-      totalPages,
-      hasNextPage,
-    })
-
-    return newAdminUserDetails({
+      totalCount,
+    });
+    const response = newAdminUserDetails({
       ...parsedPagination,
-      items: parsedUsers,
-    })
+      nodes: parsedUsers,
+    });
+    return response;
   }
 
-  async getUserProfile(id: UserId): Promise<UserDetailEntity | null>{
+  async getUserProfile(id: UserId): Promise<UserDetailEntity | null> {
     const user = await this.prismaService.user.findUnique({
       where: { id: id },
-    })
+    });
     if (!user) {
       return null;
     }
@@ -62,15 +68,16 @@ export class UserRepositoryImpl implements UserRepository {
       id: user.id,
       name: user.name,
       email: user.email,
+      thumbnailUrl: user.thumbnailUrl,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
-    })
+      updatedAt: user.updatedAt,
+    });
   }
 
-  async getUserById(id: UserId): Promise<UserEntity | null>{
+  async getUserById(id: UserId): Promise<UserEntity | null> {
     const user = await this.prismaService.user.findUnique({
       where: { id: id },
-    })
+    });
     if (!user) {
       return null;
     }
@@ -84,17 +91,18 @@ export class UserRepositoryImpl implements UserRepository {
       data: {
         name: user.name,
         email: user.email,
-      }
+      },
     });
-    if(!newUser) return null;
+    if (!newUser) return null;
 
     return newUserDetailEntity({
       id: newUser.id,
       name: newUser.name,
       email: newUser.email,
+      thumbnailUrl: newUser.thumbnailUrl,
       createdAt: newUser.createdAt,
-      updatedAt: newUser.updatedAt
-    })
+      updatedAt: newUser.updatedAt,
+    });
   }
 
   async updateProfile(user: UpdateUserDto): Promise<UserDetailEntity | null> {
@@ -103,7 +111,7 @@ export class UserRepositoryImpl implements UserRepository {
       data: {
         name: user.name,
         email: user.email,
-      }
+      },
     });
     if (!updatedUser) {
       return null;
@@ -112,17 +120,18 @@ export class UserRepositoryImpl implements UserRepository {
       id: updatedUser.id,
       name: updatedUser.name,
       email: updatedUser.email,
+      thumbnailUrl: updatedUser.thumbnailUrl,
       createdAt: updatedUser.createdAt,
-      updatedAt: updatedUser.updatedAt
-    })
+      updatedAt: updatedUser.updatedAt,
+    });
   }
 
   async withdraw(id: UserId): Promise<boolean> {
     const deletedUser = await this.prismaService.user.update({
       where: { id: id },
       data: {
-        deletedAt: new Date()
-      }
+        deletedAt: new Date(),
+      },
     });
     if (deletedUser.id === id) {
       return true;

@@ -1,6 +1,11 @@
-import { Catch, ConflictException, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
-import { GqlExceptionFilter } from "@nestjs/graphql";
-import { Prisma } from "@prisma/client";
+import {
+  Catch,
+  ConflictException,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
+import { GqlExceptionFilter } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaClientExceptionFilter implements GqlExceptionFilter {

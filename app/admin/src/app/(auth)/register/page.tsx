@@ -1,6 +1,6 @@
-import { AuthPage } from "@components/auth-page";
 import { authProviderServer } from "@providers/auth-provider";
 import { redirect } from "next/navigation";
+import { AuthPage } from "@refinedev/chakra-ui";
 
 export default async function Register() {
   const data = await getData();

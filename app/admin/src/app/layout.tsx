@@ -1,14 +1,15 @@
 import { DevtoolsProvider } from "@providers/devtools";
-import { GitHubBanner, Refine } from "@refinedev/core";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerProvider from "@refinedev/nextjs-router";
+import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import { Refine } from "@refinedev/core";
 import { Metadata } from "next";
 import React, { Suspense } from "react";
 
 import { authProvider } from "@providers/auth-provider";
 import { dataProvider } from "@providers/data-provider";
-import "@styles/global.css";
 import { ChakraProvider } from "@chakra-ui/react";
+import { useNotificationProvider } from "@refinedev/chakra-ui";
+
 
 export const metadata: Metadata = {
   title: "Refine",
@@ -24,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body>
         <Suspense>
           <ChakraProvider>
@@ -34,23 +35,23 @@ export default function RootLayout({
                   routerProvider={routerProvider}
                   dataProvider={dataProvider}
                   authProvider={authProvider}
+                  notificationProvider={useNotificationProvider}
                   resources={[
                     {
-                      name: "blog_posts",
-                      list: "/blog-posts",
-                      create: "/blog-posts/create",
-                      edit: "/blog-posts/edit/:id",
-                      show: "/blog-posts/show/:id",
+                      name: "users",
+                      list: "/users",
+                      create: "/users/create",
+                      edit: "/users/edit/:id",
+                      show: "/users/show/:id",
                       meta: {
                         canDelete: true,
                       },
-                    },
-                    {
-                      name: "categories",
-                      list: "/categories",
-                      create: "/categories/create",
-                      edit: "/categories/edit/:id",
-                      show: "/categories/show/:id",
+                    },{
+                      name: "posts",
+                      list: "/posts",
+                      create: "/posts/create",
+                      edit: "/posts/edit/:id",
+                      show: "/posts/show/:id",
                       meta: {
                         canDelete: true,
                       },

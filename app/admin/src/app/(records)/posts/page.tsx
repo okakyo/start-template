@@ -1,81 +1,24 @@
 "use client";
 
-import { useNavigation } from "@refinedev/core";
+import { GetManyResponse, useMany, useNavigation } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
+import React from "react";
+
 import {
   List,
   ShowButton,
   EditButton,
   DeleteButton,
-  usePagination,
 } from "@refinedev/chakra-ui";
 
 import { IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
-import React from "react";
-import { HStack, Table, TableContainer, Tbody, Th, Thead, Tr, Td, Box, IconButton, Button } from "@chakra-ui/react";
-
-
-type PaginationProps = {
-  current: number;
-  pageCount: number;
-  setCurrent: (page: number) => void;
-};
-
-export const Pagination: React.FC<PaginationProps> = ({
-  current,
-  pageCount,
-  setCurrent,
-}) => {
-  const pagination = usePagination({
-    current,
-    pageCount,
-  });
-
-  return (
-    <Box display="flex" justifyContent="flex-end">
-      <HStack my="3" spacing="1">
-        {pagination?.prev && (
-          <IconButton
-            aria-label="previous page"
-            onClick={() => setCurrent(current - 1)}
-            disabled={!pagination?.prev}
-            variant="outline"
-          >
-            <IconChevronLeft size="18" />
-          </IconButton>
-        )}
-
-        {pagination?.items.map((page) => {
-          if (typeof page === "string") return <span key={page}>...</span>;
-
-          return (
-            <Button
-              key={page}
-              onClick={() => setCurrent(page)}
-              variant={page === current ? "solid" : "outline"}
-            >
-              {page}
-            </Button>
-          );
-        })}
-        {pagination?.next && (
-          <IconButton
-            aria-label="next page"
-            onClick={() => setCurrent(current + 1)}
-            variant="outline"
-          >
-            <IconChevronRight size="18" />
-          </IconButton>
-        )}
-      </HStack>
-    </Box>
-  );
-};
+import { HStack, Table, TableContainer, Tbody, Th, Thead, Tr, Td, Box, IconButton, Button, Text } from "@chakra-ui/react";
+import { ListPagination } from "@components/pagination";
 
 
 
-export default function CategoryList() {
+export default function BlogPostList() {
   const columns = React.useMemo<ColumnDef<any>[]>(
     () => [
       {
@@ -87,6 +30,28 @@ export default function CategoryList() {
         id: "title",
         accessorKey: "title",
         header: "Title",
+      },
+      {
+        id: "content",
+        accessorKey: "content",
+        header: "Content",
+        cell: function render({ getValue }) {
+          return (
+            <Box overflow="hidden" maxW="200px">
+              <Text isTruncated>{getValue() as string}</Text>
+            </Box>
+          )
+        },
+      },
+      {
+        id: "createdAt",
+        accessorKey: "createdAt",
+        header: "Created At",
+        cell: function render({ getValue }) {
+          return new Date(getValue<any>()).toLocaleString(undefined, {
+            timeZone: "UTC",
+          });
+        },
       },
       {
         id: "actions",
@@ -110,32 +75,23 @@ export default function CategoryList() {
     []
   );
 
-  const { edit, show, create } = useNavigation();
-
   const {
     getHeaderGroups,
     getRowModel,
-    setOptions,
     refineCore: {
       setCurrent,
       pageCount,
       current,
-    }
+      pageSize
+    },
   } = useTable({
     columns,
   });
 
-  setOptions((prev) => ({
-    ...prev,
-    meta: {
-      ...prev.meta,
-    },
-  }));
-
   return (
-    <List>
+    <List createButtonProps={{ colorScheme: "green", variant: "solid" }}>
       <TableContainer>
-        <Table>
+        <Table variant='striped'>
           <Thead>
             {getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id}>
@@ -164,7 +120,7 @@ export default function CategoryList() {
           </Tbody>
         </Table>
       </TableContainer>
-      <Pagination
+      <ListPagination
         current={current}
         pageCount={pageCount}
         setCurrent={setCurrent}

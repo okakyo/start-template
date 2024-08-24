@@ -17,15 +17,6 @@ export default function BlogPostCreate() {
 
   const blogPostsData = queryResult?.data?.data;
 
-  const { options: categoryOptions } = useSelect({
-    resource: "categories",
-    defaultValue: blogPostsData?.category?.id,
-  });
-
-  React.useEffect(() => {
-    setValue("category.id", blogPostsData?.category?.id);
-  }, [categoryOptions]);
-
   return (
     <div style={{ padding: "16px" }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -72,23 +63,6 @@ export default function BlogPostCreate() {
             />
             <span style={{ color: "red" }}>
               {(errors as any)?.content?.message as string}
-            </span>
-          </label>
-          <label>
-            <span style={{ marginRight: "8px" }}>Category</span>
-            <select
-              {...register("category.id", {
-                required: "This field is required",
-              })}
-            >
-              {categoryOptions?.map((option) => (
-                <option value={option.value} key={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <span style={{ color: "red" }}>
-              {(errors as any)?.category?.id?.message as string}
             </span>
           </label>
           <label>

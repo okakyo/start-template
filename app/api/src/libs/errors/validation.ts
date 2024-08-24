@@ -3,7 +3,7 @@ import {
   ArgumentMetadata,
   BadRequestException,
 } from '@nestjs/common';
-import {BaseSchema} from "valibot"
+import { BaseSchema } from 'valibot';
 
 export class ValibotValidationPipe implements PipeTransform {
   constructor(private schema) {}

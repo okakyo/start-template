@@ -1,30 +1,31 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-import { OffsetPaginatedObject } from "./util";
-
+import { Field, ObjectType } from '@nestjs/graphql';
+import { OffsetPaginatedObject } from './util';
 
 @ObjectType()
 export class UserObject {
-  @Field((type) => String)
+  @Field(() => String)
   id: string;
 
-  @Field((type) => String)
+  @Field(() => String)
   name: string;
 
-
+  @Field(() => String, { nullable: true })
+  thumbnailUrl?: string;
 }
 
 @ObjectType()
 export class UserDetailObject extends UserObject {
-
-  @Field((type) => String)
+  @Field(() => String)
   email: string;
 
-  @Field((type) => Date)
+  @Field(() => Date)
   createdAt: Date;
 
-  @Field((type) => Date)
+  @Field(() => Date)
   updatedAt: Date;
 }
 
 @ObjectType()
-export class PaginatedUserDetailObject extends OffsetPaginatedObject(UserDetailObject) {}
+export class PaginatedUserDetailObject extends OffsetPaginatedObject(
+  UserDetailObject,
+) {}

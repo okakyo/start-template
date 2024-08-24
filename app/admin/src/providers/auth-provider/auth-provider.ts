@@ -18,6 +18,8 @@ const mockUsers = [
   },
 ];
 
+
+// Firebase、API を利用して認証を行う
 export const authProvider: AuthProvider = {
   login: async ({ email, username, password, remember }) => {
     // Suppose we actually send a request to the back end here.

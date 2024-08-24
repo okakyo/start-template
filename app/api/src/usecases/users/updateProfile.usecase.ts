@@ -4,10 +4,8 @@ import { UpdateUserDto } from '../../domains/dtos/user';
 
 @Injectable()
 export class updateProfileUseCase {
-  constructor(
-    private readonly useRepository: UserRepository
-  ) {}
-  async exec(userInput:UpdateUserDto) {
+  constructor(private readonly useRepository: UserRepository) {}
+  async exec(userInput: UpdateUserDto) {
     try {
       const user = await this.useRepository.getUserById(userInput.id);
       if (!user) {

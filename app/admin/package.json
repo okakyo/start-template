@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
+    "@react-pdf/renderer": "^3.4.4",
     "@refinedev/chakra-ui": "^2.31.2",
     "@refinedev/cli": "^2.16.21",
     "@refinedev/core": "^4.47.1",

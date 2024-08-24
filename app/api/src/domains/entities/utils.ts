@@ -1,9 +1,8 @@
-import * as v from 'valibot'
+import * as v from 'valibot';
 
 export const paginationSchema = v.object({
-  totalPages: v.optional(v.number()),
-  hasNextPage: v.optional(v.boolean()),
+  totalCount: v.optional(v.number()),
 });
 
-export const newPagination = (input: v.InferInput<typeof paginationSchema>) => v.parse(paginationSchema, input);
-
+export const newPagination = (input: v.InferInput<typeof paginationSchema>) =>
+  v.parse(paginationSchema, input);

@@ -1,28 +1,27 @@
-import { Field,  ObjectType } from "@nestjs/graphql";
-import { UserObject } from "./user.object";
-import { OffsetPaginatedObject } from "./util";
+import { Field, ObjectType } from '@nestjs/graphql';
+import { OffsetPaginatedObject } from './util';
 
 @ObjectType()
 export class PostObject {
-  @Field((type) => String)
+  @Field(() => String)
   id: string;
 
-  @Field((type)=>String)
+  @Field(() => String)
   title: string;
 
-  @Field((type) => String)
+  @Field(() => String)
   content: string;
 
-  @Field((type) => String)
+  @Field(() => String)
   authorId: string;
 
-  @Field((type) => Date)
+  @Field(() => Date)
   createdAt: Date;
 
-  @Field((type) => Date)
+  @Field(() => Date)
   updatedAt: Date;
 
-  @Field((type) => Date, { nullable: true })
+  @Field(() => Date, { nullable: true })
   deletedAt?: Date;
 }
 

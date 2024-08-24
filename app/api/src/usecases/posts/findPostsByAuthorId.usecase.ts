@@ -4,11 +4,9 @@ import { UserId } from 'src/domains/entities/user.entity';
 
 @Injectable()
 export class findPostsByAuthorIdUseCase {
-  constructor(
-    private readonly postRepository: PostRepository
-  ){}
+  constructor(private readonly postRepository: PostRepository) {}
   async exec(userId: UserId) {
     const posts = await this.postRepository.findPostsByAuthorId(userId);
-    return posts
+    return posts;
   }
 }

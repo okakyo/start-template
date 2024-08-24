@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { UserModule,PostModule } from './modules';
+import { UserModule, PostModule } from './modules';
 import { FirebaseModule } from './modules/firebase.module';
 import { ConfigModule } from '@nestjs/config';
 @Module({

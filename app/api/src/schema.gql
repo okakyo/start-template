@@ -28,15 +28,15 @@ type Mutation {
   updateProfile(user: UpdateUserInput!): UserObject
 }
 
-type PaginatedUserDetailObject {
-  hasNextPage: Boolean!
-  items: [UserDetailObject!]
-  totalPages: Int!
+input OffsetPaginationArgs {
+  skip: Int
+  take: Int
 }
 
-input PaginationArgs {
-  page: Int
-  perPage: Int
+type PaginatedUserDetailObject {
+  hasNextPage: Boolean!
+  nodes: [UserDetailObject!]
+  totalCount: Int!
 }
 
 type PostObject {
@@ -54,7 +54,7 @@ type Query {
   post(id: String!): PostObject
   posts: [PostObject!]!
   user(id: String!): UserDetailObject
-  users(pagination: PaginationArgs!): PaginatedUserDetailObject!
+  users(pagination: OffsetPaginationArgs): PaginatedUserDetailObject!
 }
 
 input UpdatePostInput {
@@ -76,10 +76,12 @@ type UserDetailObject {
   id: String!
   name: String!
   posts: [PostObject!]
+  thumbnailUrl: String
   updatedAt: DateTime!
 }
 
 type UserObject {
   id: String!
   name: String!
+  thumbnailUrl: String
 }

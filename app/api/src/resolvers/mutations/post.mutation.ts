@@ -1,16 +1,31 @@
-import { BadRequestException, NotFoundException, UseGuards, UsePipes } from "@nestjs/common";
-import { Mutation, Resolver,Args} from "@nestjs/graphql";
-import { ZodValidationPipe } from "src/libs/config/zod.config";
-import { CreatePostInput,UpdatePostInput } from "src/domains/dtos/post";
-import { CreatePostDtoSchema, newCreatePostDto } from "src/domains/dtos/post/createPost.dto";
-import { UpdatePostDtoSchema, newUpdatePostDto } from "src/domains/dtos/post/updatePost.dto";
-import { PostId, newPostId } from "src/domains/entities/post.entity";
-import { PostObject } from "src/infra/objects/post.object";
-import { CreatePostUseCase, RemovePostUseCase, UpdatePostUseCase, findPostByIdUseCase } from "src/usecases/posts";
-import * as v from 'valibot';
-import { JwtAuthGuard } from "src/libs/auth/jwt.guard";
+import {
+  BadRequestException,
+  NotFoundException,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
+import { Mutation, Resolver, Args } from '@nestjs/graphql';
+import { ZodValidationPipe } from 'src/libs/config/zod.config';
+import { CreatePostInput, UpdatePostInput } from 'src/domains/dtos/post';
+import {
+  CreatePostDtoSchema,
+  newCreatePostDto,
+} from 'src/domains/dtos/post/createPost.dto';
+import {
+  UpdatePostDtoSchema,
+  newUpdatePostDto,
+} from 'src/domains/dtos/post/updatePost.dto';
+import { PostId, newPostId } from 'src/domains/entities/post.entity';
+import { PostObject } from 'src/infra/objects/post.object';
+import {
+  CreatePostUseCase,
+  RemovePostUseCase,
+  UpdatePostUseCase,
+  findPostByIdUseCase,
+} from 'src/usecases/posts';
+import { JwtAuthGuard } from 'src/libs/auth/jwt.guard';
 
-@Resolver(of => PostObject)
+@Resolver((of) => PostObject)
 export class PostMutation {
   // Add your post mutations here
   constructor(
@@ -18,20 +33,20 @@ export class PostMutation {
     private readonly createPostUseCase: CreatePostUseCase,
     private readonly updatePostUseCase: UpdatePostUseCase,
     private readonly removePostUseCase: RemovePostUseCase,
-  ) { }
+  ) {}
 
-  @Mutation(returns => PostObject)
+  @Mutation(() => PostObject)
   @UseGuards(JwtAuthGuard)
   async createPost(@Args('post') post: CreatePostInput) {
     // TODO: Valitation を追加
     const input = newCreatePostDto(post);
     if (!input.success) {
       throw new BadRequestException(input.issues[0].message);
-    };
+    }
     return await this.createPostUseCase.exec(input.output);
   }
 
-  @Mutation(returns => PostObject)
+  @Mutation(() => PostObject)
   @UseGuards(JwtAuthGuard)
   async updatePost(@Args('post') post: UpdatePostInput) {
     const inputPost = newUpdatePostDto(post);
@@ -46,7 +61,7 @@ export class PostMutation {
     return await this.updatePostUseCase.exec(input);
   }
 
-  @Mutation(returns => Boolean)
+  @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
   async removePost(@Args('id') id: string) {
     const postId = newPostId(id);
@@ -57,4 +72,3 @@ export class PostMutation {
     return await this.removePostUseCase.exec(postId);
   }
 }
-

@@ -1,4 +1,4 @@
-import { Resolver, Query,Args, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { findPostByIdUseCase, findPostsUseCase } from '../../usecases/posts';
 import { PostObject } from '../../infra/objects/post.object';
 import { UserObject } from 'src/infra/objects';
@@ -6,26 +6,26 @@ import { getUserUseCase } from 'src/usecases/users';
 import { newPostId } from 'src/domains/entities/post.entity';
 import { newUserId } from 'src/domains/entities/user.entity';
 
-@Resolver(of => PostObject)
+@Resolver(() => PostObject)
 export class PostQuery {
   constructor(
     private readonly findPostsUseCase: findPostsUseCase,
     private readonly findPostByIdUseCase: findPostByIdUseCase,
-    private readonly getUserUseCase: getUserUseCase
-  ) { }
+    private readonly getUserUseCase: getUserUseCase,
+  ) {}
 
-  @Query(returns => [PostObject], { name: 'posts' })
+  @Query(() => [PostObject], { name: 'posts' })
   async posts() {
     return await this.findPostsUseCase.exec();
   }
 
-  @Query(returns => PostObject, { name: 'post', nullable: true })
+  @Query(() => PostObject, { name: 'post', nullable: true })
   async post(@Args('id') id: string) {
     const parsedPostId = newPostId(id);
     return await this.findPostByIdUseCase.exec(parsedPostId);
   }
 
-  @ResolveField(type => UserObject, { name: 'author' })
+  @ResolveField(() => UserObject, { name: 'author' })
   async author(@Parent() post: PostObject) {
     const { authorId } = post;
     const parsedAuthorId = newUserId(authorId);

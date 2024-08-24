@@ -11,23 +11,44 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  posts     Post[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
+  id         String       @id @default(cuid())
+  email      String       @unique
+  name       String
+  thumbnailUrl String?
+  posts      Post[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  deletedAt  DateTime?
+  TeamMember TeamMember[]
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  isPublished Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
+  id          String    @id @default(cuid())
+  title       String
+  content     String
+  isPublished Boolean   @default(false)
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+}
+
+model Team {
+  id         String       @id @default(cuid())
+  name       String
+  plan       Int          @default(0)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  deletedAt  DateTime?
+  teamMember TeamMember[]
+}
+
+model TeamMember {
+  id       String @id @default(cuid())
+  role     String @default("MEMBER")
+  team     Team   @relation(fields: [teamId], references: [id])
+  teamId   String
+  member   User   @relation(fields: [memberId], references: [id])
+  memberId String
 }

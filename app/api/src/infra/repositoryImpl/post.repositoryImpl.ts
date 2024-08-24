@@ -1,29 +1,74 @@
-import { PrismaService } from "src/libs/config/prisma.service";
-import { PostRepository } from "../../domains/interfaces/post.repository";
-import { PostEntity, PostId, newPostEntity } from "../../domains/entities/post.entity";
-import { Injectable } from "@nestjs/common";
-import { CreatePostDto, UpdatePostDto } from "src/domains/dtos/post";
-import { UserId } from "src/domains/entities/user.entity";
+import { PrismaService } from 'src/libs/config/prisma.service';
+import { PostRepository } from '../../domains/interfaces/post.repository';
+import {
+  AdminPosts,
+  PostEntity,
+  PostId,
+  newAdminPosts,
+  newPostEntity,
+  newPostId,
+} from '../../domains/entities/post.entity';
+import { Injectable } from '@nestjs/common';
+import { CreatePostDto, UpdatePostDto } from 'src/domains/dtos/post';
+import { UserId } from 'src/domains/entities/user.entity';
+import { OffsetPaginationArgs } from 'src/domains/dtos/utils/pagination.dto';
+import { newPagination } from 'src/domains/entities/utils';
 
 @Injectable()
 export class PostRepositoryImpl implements PostRepository {
-  constructor(
-    private readonly prismaService: PrismaService
-  ){}
+  constructor(private readonly prismaService: PrismaService) {}
+  // TODO: アカウント権限で取得できるようにすること、チームごとのユーザーで取得できるようにすること
+  async adminGetAllPosts(
+    pagination: OffsetPaginationArgs,
+  ): Promise<AdminPosts> {
+    const { skip, take } = pagination;
+
+    const [posts, totalCount] = await Promise.all([
+      this.prismaService.post.findMany({
+        skip,
+        take,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prismaService.post.count(),
+    ]);
+    const parsedUsers = posts.map((post) =>
+      newPostEntity({
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        isPublished: post.isPublished,
+        authorId: post.authorId,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+        deletedAt: post.deletedAt,
+      }),
+    );
+
+    const parsedPagination = newPagination({
+      totalCount,
+    });
+    const response = newAdminPosts({
+      ...parsedPagination,
+      nodes: parsedUsers,
+    });
+    return response;
+  }
   async findPosts() {
     const posts = await this.prismaService.post.findMany({
       orderBy: {
-        createdAt: 'desc'
+        createdAt: 'desc',
       },
     });
     return posts.map((post) => {
       return newPostEntity(post);
-    })
+    });
   }
-  async findPostById(id: PostId): Promise<PostEntity|null> {
+  async findPostById(id: PostId): Promise<PostEntity | null> {
     const post = await this.prismaService.post.findUnique({
       where: {
-        id: id
+        id: id,
       },
     });
     if (!post) {
@@ -35,7 +80,7 @@ export class PostRepositoryImpl implements PostRepository {
   async findPostsByAuthorId(authorId: UserId): Promise<PostEntity[]> {
     const posts = await this.prismaService.post.findMany({
       where: {
-        authorId: authorId
+        authorId: authorId,
       },
     });
     return posts.map((post) => {
@@ -43,22 +88,22 @@ export class PostRepositoryImpl implements PostRepository {
     });
   }
 
-  async createPost(Post: CreatePostDto): Promise<PostEntity|null> {
+  async createPost(Post: CreatePostDto): Promise<PostEntity | null> {
     const post = await this.prismaService.post.create({
       data: {
         title: Post.title,
         content: Post.content,
         isPublished: Post.isPublished,
-        authorId: "test"
+        authorId: 'test',
       },
       include: {
         author: {
           select: {
             id: true,
             name: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
     if (!post) {
       return null;
@@ -66,13 +111,13 @@ export class PostRepositoryImpl implements PostRepository {
     return newPostEntity(post);
   }
   // TODO: Define the Input type of the Post parameter
-  async updatePost(input: UpdatePostDto): Promise<PostEntity|null> {
+  async updatePost(input: UpdatePostDto): Promise<PostEntity | null> {
     const { id, ...data } = input;
     const updatedPost = await this.prismaService.post.update({
       where: {
-        id: id
+        id: id,
       },
-      data
+      data,
     });
     if (!updatedPost) {
       return null;
@@ -83,8 +128,8 @@ export class PostRepositoryImpl implements PostRepository {
   async deletePost(id: PostId): Promise<boolean> {
     const post = await this.prismaService.post.delete({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
     return post ? true : false;
   }
